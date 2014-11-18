@@ -337,7 +337,6 @@
 
             this.updateView();
             this.updateCalendars();
-            this.updateInputText();
         },
 
         setEndDate: function(endDate) {
@@ -354,56 +353,11 @@
 
             this.updateView();
             this.updateCalendars();
-            this.updateInputText();
         },
 
         updateView: function () {
             this.leftCalendar.month.month(this.startDate.month()).year(this.startDate.year()).hour(this.startDate.hour()).minute(this.startDate.minute());
             this.rightCalendar.month.month(this.endDate.month()).year(this.endDate.year()).hour(this.endDate.hour()).minute(this.endDate.minute());
-            this.updateFormInputs();
-        },
-
-        updateFormInputs: function () {
-            this.container.find('input[name=daterangepicker_start]').val(this.startDate.format(this.format));
-            this.container.find('input[name=daterangepicker_end]').val(this.endDate.format(this.format));
-
-            if (this.startDate.isSame(this.endDate) || this.startDate.isBefore(this.endDate)) {
-                this.container.find('button.applyBtn').removeAttr('disabled');
-            } else {
-                this.container.find('button.applyBtn').attr('disabled', 'disabled');
-            }
-        },
-
-        updateFromControl: function () {
-            if (!this.element.is('input')) return;
-            if (!this.element.val().length) return;
-
-            var dateString = this.element.val().split(this.separator),
-                start = null,
-                end = null;
-
-            if(dateString.length === 2) {
-                start = moment(dateString[0], this.format).zone(this.timeZone);
-                end = moment(dateString[1], this.format).zone(this.timeZone);
-            }
-
-            if (this.singleDatePicker || start === null || end === null) {
-                start = moment(this.element.val(), this.format).zone(this.timeZone);
-                end = start;
-            }
-
-            if (end.isBefore(start)) return;
-
-            this.oldStartDate = this.startDate.clone();
-            this.oldEndDate = this.endDate.clone();
-
-            this.startDate = start;
-            this.endDate = end;
-
-            if (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
-                this.notify();
-
-            this.updateCalendars();
         },
 
         notify: function () {
