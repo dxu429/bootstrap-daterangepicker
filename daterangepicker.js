@@ -328,7 +328,7 @@
                 this.startDate = moment(startDate).tz(this.timeZone);
 
             if (typeof startDate === 'object')
-                this.startDate = startDate;
+                this.startDate = moment(startDate);
 
             if (!this.timePicker)
                 this.startDate = this.startDate.startOf('day');
@@ -344,7 +344,7 @@
                 this.endDate = moment(endDate).tz(this.timeZone);
 
             if (typeof endDate === 'object')
-                this.endDate = endDate;
+                this.endDate = moment(endDate);
 
             if (!this.timePicker)
                 this.endDate = this.endDate.endOf('day');
