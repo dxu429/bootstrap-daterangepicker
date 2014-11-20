@@ -120,28 +120,28 @@
                 this.separator = options.separator;
 
             if (typeof options.startDate === 'string')
-                this.startDate = moment(options.startDate, this.format);
+                this.startDate = moment.utc(options.startDate, this.format);
 
             if (typeof options.endDate === 'string')
-                this.endDate = moment(options.endDate, this.format);
+                this.endDate = moment.utc(options.endDate, this.format);
 
             if (typeof options.minDate === 'string')
-                this.minDate = moment(options.minDate, this.format);
+                this.minDate = moment.utc(options.minDate, this.format);
 
             if (typeof options.maxDate === 'string')
-                this.maxDate = moment(options.maxDate, this.format);
+                this.maxDate = moment.utc(options.maxDate, this.format);
 
             if (typeof options.startDate === 'object')
-                this.startDate = moment(options.startDate);
+                this.startDate = options.startDate;
 
             if (typeof options.endDate === 'object')
-                this.endDate = moment(options.endDate);
+                this.endDate = options.endDate;
 
             if (typeof options.minDate === 'object')
-                this.minDate = moment(options.minDate);
+                this.minDate = options.minDate;
 
             if (typeof options.maxDate === 'object')
-                this.maxDate = moment(options.maxDate);
+                this.maxDate = options.maxDate;
 
             if (typeof options.dateLimit === 'object')
                 this.dateLimit = options.dateLimit;
@@ -257,8 +257,8 @@
             // bind the time zone used to build the calendar to either the timeZone passed in through the options or the zone of the startDate (which will be the local time zone by default)
             if (typeof options.timeZone === 'string' || typeof options.timeZone === 'number') {
                 this.timeZone = options.timeZone;
-                this.startDate.zone(this.timeZone);
-                this.endDate.zone(this.timeZone);
+                this.startDate = this.startDate.tz(this.timeZone);
+                this.endDate = this.endDate.tz(this.timeZone);
             } else {
                 this.timeZone = moment(this.startDate).zone();
             }
@@ -325,10 +325,10 @@
 
         setStartDate: function(startDate) {
             if (typeof startDate === 'string')
-                this.startDate = moment(startDate, this.format).zone(this.timeZone);
+                this.startDate = moment(startDate).tz(this.timeZone);
 
             if (typeof startDate === 'object')
-                this.startDate = moment(startDate);
+                this.startDate = startDate;
 
             if (!this.timePicker)
                 this.startDate = this.startDate.startOf('day');
@@ -341,10 +341,10 @@
 
         setEndDate: function(endDate) {
             if (typeof endDate === 'string')
-                this.endDate = moment(endDate, this.format).zone(this.timeZone);
+                this.endDate = moment(endDate).tz(this.timeZone);
 
             if (typeof endDate === 'object')
-                this.endDate = moment(endDate);
+                this.endDate = endDate;
 
             if (!this.timePicker)
                 this.endDate = this.endDate.endOf('day');
@@ -362,7 +362,7 @@
 
         notify: function () {
             this.updateView();
-            this.cb(this.startDate, this.endDate, this.chosenLabel);
+            this.cb(this.startDate.utc(), this.endDate.utc(), this.chosenLabel);
         },
 
         move: function () {
@@ -452,7 +452,8 @@
             if (
                 target.closest(this.element).length ||
                 target.closest(this.container).length ||
-                target.closest('.calendar-date').length
+                target.closest('.calendar-date').length ||
+                target.closest('input.select2-input').length
                 ) return;
             this.hide();
         },
@@ -515,7 +516,6 @@
             }
             this.startDate = startDate;
             this.endDate = endDate;
-
             this.updateView();
             this.updateCalendars();
         },
@@ -619,8 +619,8 @@
 
         buildCalendar: function (month, year, hour, minute, second, side) {
             var daysInMonth = moment([year, month]).daysInMonth();
-            var firstDay = moment([year, month, 1]);
-            var lastDay = moment([year, month, daysInMonth]);
+            var firstDay = moment([year, month, 1]).tz(this.timeZone);
+            var lastDay = moment([year, month, daysInMonth]).tz(this.timeZone);
             var lastMonth = moment(firstDay).subtract(1, 'month').month();
             var lastYear = moment(firstDay).subtract(1, 'month').year();
 
@@ -647,15 +647,15 @@
             if (dayOfWeek == this.locale.firstDay)
                 startDay = daysInLastMonth - 6;
 
-            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]).zone(this.timeZone);
-
+            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]);
+            
             var col, row;
             for (i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).add(24, 'hour')) {
                 if (i > 0 && col % 7 === 0) {
                     col = 0;
                     row++;
                 }
-                calendar[row][col] = curDate.clone().hour(hour);
+                calendar[row][col] = curDate.clone().hour(hour);;
                 curDate.hour(12);
 
                 if (this.minDate && calendar[row][col].format('YYYY-MM-DD') == this.minDate.format('YYYY-MM-DD') && calendar[row][col].isBefore(this.minDate) && side == 'left') {
