@@ -120,16 +120,16 @@
                 this.separator = options.separator;
 
             if (typeof options.startDate === 'string')
-                this.startDate = moment.utc(options.startDate, this.format);
+                this.startDate = moment.utc(options.startDate);
 
             if (typeof options.endDate === 'string')
-                this.endDate = moment.utc(options.endDate, this.format);
+                this.endDate = moment.utc(options.endDate);
 
             if (typeof options.minDate === 'string')
-                this.minDate = moment.utc(options.minDate, this.format);
+                this.minDate = moment.utc(options.minDate);
 
             if (typeof options.maxDate === 'string')
-                this.maxDate = moment.utc(options.maxDate, this.format);
+                this.maxDate = moment.utc(options.maxDate);
 
             if (typeof options.startDate === 'object')
                 this.startDate = options.startDate;
@@ -138,10 +138,10 @@
                 this.endDate = options.endDate;
 
             if (typeof options.minDate === 'object')
-                this.minDate = options.minDate;
+                this.minDate = moment(options.minDate);
 
             if (typeof options.maxDate === 'object')
-                this.maxDate = options.maxDate;
+                this.maxDate = moment(options.maxDate);
 
             if (typeof options.dateLimit === 'object')
                 this.dateLimit = options.dateLimit;
@@ -619,8 +619,8 @@
 
         buildCalendar: function (month, year, hour, minute, second, side) {
             var daysInMonth = moment([year, month]).daysInMonth();
-            var firstDay = moment([year, month, 1]);
-            var lastDay = moment([year, month, daysInMonth]);
+            var firstDay = moment([year, month, 1]);//.tz(this.timeZone);
+            var lastDay = moment([year, month, daysInMonth]);//.tz(this.timeZone);
             var lastMonth = moment(firstDay).subtract(1, 'month').month();
             var lastYear = moment(firstDay).subtract(1, 'month').year();
 
