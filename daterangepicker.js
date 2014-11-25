@@ -570,8 +570,8 @@
             var cal = $(e.target).closest('.calendar'),
                 isLeft = cal.hasClass('left');
 
-            var hour = parseInt(cal.find('.hourselect').val(), 10);
-            var minute = parseInt(cal.find('.minuteselect').val(), 10);
+            var hour = parseInt(cal.find('.hourselect.select2-offscreen').val(), 10);
+            var minute = parseInt(cal.find('.minuteselect.select2-offscreen').val(), 10);
             var second = 0;
 
             if (this.timePickerSeconds) {
@@ -614,7 +614,8 @@
             this.leftCalendar.calendar = this.buildCalendar(this.leftCalendar.month.month(), this.leftCalendar.month.year(), this.leftCalendar.month.hour(), this.leftCalendar.month.minute(), this.leftCalendar.month.second(), 'left');
             this.rightCalendar.calendar = this.buildCalendar(this.rightCalendar.month.month(), this.rightCalendar.month.year(), this.rightCalendar.month.hour(), this.rightCalendar.month.minute(), this.rightCalendar.month.second(), 'right');
             this.container.find('.calendar.left').empty().html(this.renderCalendar(this.leftCalendar.calendar, this.startDate, this.minDate, this.maxDate, 'left'));
-            this.container.find('.calendar.right').empty().html(this.renderCalendar(this.rightCalendar.calendar, this.endDate, this.singleDatePicker ? this.minDate : this.startDate, this.maxDate, 'right'));
+            this.container.find('.calendar.right').empty().html(this.renderCalendar(this.rightCalendar.calendar, this.endDate, this.singleDatePicker ? this.minDate : this.minDate || this.startDate, this.maxDate, 'right'));
+            this.container.find('select.hourselect, select.minuteselect').select2({containerCssClass: 'adbs-select2-container time-select2', dropdownCssClass: 'adbs-select2-drop'});
         },
 
         buildCalendar: function (month, year, hour, minute, second, side) {
@@ -655,8 +656,17 @@
                     col = 0;
                     row++;
                 }
-                calendar[row][col] = curDate.clone().hour(hour);;
+
+                calendar[row][col] = curDate.clone().hour(hour);
                 curDate.hour(12);
+                
+                if (this.startDate && calendar[row][col].format('YYYY-MM-DD') != this.startDate.format('YYYY-MM-DD') && side == 'left') {
+                    calendar[row][col] = calendar[row][col].startOf('day');
+                }
+
+                if (this.endDate && calendar[row][col].format('YYYY-MM-DD') != this.endDate.format('YYYY-MM-DD') && side == 'right') {
+                    calendar[row][col] = calendar[row][col].endOf('day');
+                }
 
                 if (this.minDate && calendar[row][col].format('YYYY-MM-DD') == this.minDate.format('YYYY-MM-DD') && calendar[row][col].isBefore(this.minDate) && side == 'left') {
                     calendar[row][col] = this.minDate.clone();
@@ -665,7 +675,6 @@
                 if (this.maxDate && calendar[row][col].format('YYYY-MM-DD') == this.maxDate.format('YYYY-MM-DD') && calendar[row][col].isAfter(this.maxDate) && side == 'right') {
                     calendar[row][col] = this.maxDate.clone();
                 }
-
             }
 
             return calendar;
