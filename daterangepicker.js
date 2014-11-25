@@ -65,7 +65,6 @@
             .on('click.daterangepicker', '.prev', $.proxy(this.clickPrev, this))
             .on('click.daterangepicker', '.next', $.proxy(this.clickNext, this))
             .on('click.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
-            .on('click.daterangepicker', 'select.hourselect,select.minuteselect,select.secondselect,select.ampmselect', $.proxy(this.timeDropdown, this))
             .on('change.daterangepicker', 'select.hourselect,select.minuteselect,select.secondselect,select.ampmselect', $.proxy(this.updateTime, this));
 
         
@@ -420,6 +419,9 @@
             if (this.element.hasClass('active')) {
                 this.hide();
             } else {
+                var other = $('.b-daterangepicker.active');
+                if(other.length)
+                    other.data('daterangepicker').hide();
                 this.show();
             }
         },
@@ -558,12 +560,6 @@
             $(e.target).addClass('active');
 
             this.setCustomDates(startDate, endDate);
-        },
-
-        // Force select dropdown to show on click
-        timeDropdown: function(e) {
-            $(e.target).focus();
-            e.stopPropagation();
         },
 
         updateTime: function(e) {
