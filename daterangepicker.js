@@ -659,11 +659,11 @@
                 calendar[row][col] = curDate.clone().hour(hour);
                 curDate.hour(12);
                 
-                if (this.startDate && calendar[row][col].format('YYYY-MM-DD') != this.startDate.format('YYYY-MM-DD') && side == 'left') {
+                if (this.startDate && calendar[row][col].format('YYYY-MM-DD') != this.startDate.format('YYYY-MM-DD') && (side == 'left' || this.singleDatePicker)) {
                     calendar[row][col] = calendar[row][col].startOf('day');
                 }
 
-                if (this.endDate && calendar[row][col].format('YYYY-MM-DD') != this.endDate.format('YYYY-MM-DD') && side == 'right') {
+                if (this.endDate && calendar[row][col].format('YYYY-MM-DD') != this.endDate.format('YYYY-MM-DD') && (side == 'right' && !this.singleDatePicker)) {
                     calendar[row][col] = calendar[row][col].endOf('day');
                 }
 
