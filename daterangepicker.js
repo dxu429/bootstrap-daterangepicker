@@ -258,6 +258,10 @@
                 this.timeZone = options.timeZone;
                 this.startDate = this.startDate.tz(this.timeZone);
                 this.endDate = this.endDate.tz(this.timeZone);
+                if(this.minDate)
+                    this.minDate = this.minDate.tz(this.timeZone);
+                if(this.maxDate)
+                    this.maxDate = this.maxDate.tz(this.timeZone);
             } else {
                 this.timeZone = moment(this.startDate).zone();
             }
@@ -513,8 +517,7 @@
         setCustomDates: function(startDate, endDate) {
             this.chosenLabel = this.locale.customRangeLabel;
             if (startDate.isAfter(endDate)) {
-                var difference = this.endDate.diff(this.startDate);
-                endDate = moment(startDate).add(difference, 'ms');
+                endDate = startDate.clone().add(1, 'day').endOf('day');
             }
             this.startDate = startDate;
             this.endDate = endDate;
