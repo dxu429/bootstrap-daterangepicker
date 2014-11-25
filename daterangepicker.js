@@ -78,9 +78,9 @@
 
         setOptions: function(options, callback) {
 
-            this.startDate = moment().startOf('day');
-            this.endDate = moment().endOf('day');
-            this.timeZone = moment().zone();
+            this.startDate = moment.utc().startOf('day');
+            this.endDate = moment.utc().endOf('day');
+            this.timeZone = moment.utc().zone();
             this.minDate = false;
             this.maxDate = false;
             this.dateLimit = false;
@@ -130,17 +130,17 @@
             if (typeof options.maxDate === 'string')
                 this.maxDate = moment.utc(options.maxDate);
 
-            if (typeof options.startDate === 'object')
+            if (options.startDate && typeof options.startDate === 'object')
                 this.startDate = options.startDate;
 
-            if (typeof options.endDate === 'object')
+            if (options.endDate && typeof options.endDate === 'object')
                 this.endDate = options.endDate;
 
             if (typeof options.minDate === 'object')
-                this.minDate = moment(options.minDate);
+                this.minDate = options.minDate;
 
             if (typeof options.maxDate === 'object')
-                this.maxDate = moment(options.maxDate);
+                this.maxDate = options.maxDate;
 
             if (typeof options.dateLimit === 'object')
                 this.dateLimit = options.dateLimit;
@@ -263,7 +263,7 @@
                 if(this.maxDate)
                     this.maxDate = this.maxDate.tz(this.timeZone);
             } else {
-                this.timeZone = moment(this.startDate).zone();
+                this.timeZone = this.startDate.zone();
             }
 
             if (typeof callback === 'function') {
@@ -619,8 +619,8 @@
 
         buildCalendar: function (month, year, hour, minute, second, side) {
             var daysInMonth = moment([year, month]).daysInMonth();
-            var firstDay = moment([year, month, 1]);//.tz(this.timeZone);
-            var lastDay = moment([year, month, daysInMonth]);//.tz(this.timeZone);
+            var firstDay = moment([year, month, 1]).zone(this.timeZone);
+            var lastDay = moment([year, month, daysInMonth]).zone(this.timeZone);
             var lastMonth = moment(firstDay).subtract(1, 'month').month();
             var lastYear = moment(firstDay).subtract(1, 'month').year();
 
@@ -647,7 +647,7 @@
             if (dayOfWeek == this.locale.firstDay)
                 startDay = daysInLastMonth - 6;
 
-            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]);
+            var curDate = moment([lastYear, lastMonth, startDay, 12, minute, second]).zone(this.timeZone);
             
             var col, row;
             for (i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment(curDate).add(24, 'hour')) {
