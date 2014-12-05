@@ -287,12 +287,12 @@
             this.oldChosenLabel = this.chosenLabel;
 
             this.leftCalendar = {
-                month: moment([this.startDate.year(), this.startDate.month(), 1, this.startDate.hour(), this.startDate.minute(), this.startDate.second()]),
+                month: moment.tz([this.startDate.year(), this.startDate.month(), 1, this.startDate.hour(), this.startDate.minute(), this.startDate.second()], this.timeZone),
                 calendar: []
             };
 
             this.rightCalendar = {
-                month: moment([this.endDate.year(), this.endDate.month(), 1, this.endDate.hour(), this.endDate.minute(), this.endDate.second()]),
+                month: moment.tz([this.endDate.year(), this.endDate.month(), 1, this.endDate.hour(), this.endDate.minute(), this.endDate.second()], this.timeZone),
                 calendar: []
             };
 
@@ -604,23 +604,25 @@
             }
 
             if (isLeft) {
-                var start = this.startDate.clone();
+                var start = this.startDate.clone().tz(this.timeZone);
                 start.hour(hour);
                 start.minute(minute);
                 start.second(second);
                 this.startDate = start;
-                this.leftCalendar.month.hour(hour).minute(minute).second(second);
+                this.endDate = this.endDate.tz(this.timeZone);
+                // this.leftCalendar.month.hour(hour).minute(minute).second(second);
                 if (this.singleDatePicker)
                     this.endDate = start.clone();
             } else {
-                var end = this.endDate.clone();
+                var end = this.endDate.clone().tz(this.timeZone);
                 end.hour(hour);
                 end.minute(minute);
                 end.second(second);
                 this.endDate = end;
+                this.startDate = this.startDate.tz(this.timeZone);
                 if (this.singleDatePicker)
                     this.startDate = end.clone();
-                this.rightCalendar.month.hour(hour).minute(minute).second(second);
+                // this.rightCalendar.month.hour(hour).minute(minute).second(second);
             }
 
             this.updateView();
