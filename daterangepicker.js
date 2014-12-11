@@ -92,6 +92,7 @@
             this.timePickerIncrement = 1;
             this.timePicker12Hour = true;
             this.singleDatePicker = false;
+            this.hasStartInit = options.startDate;
 
             this.opens = 'right';
             if (this.element.hasClass('pull-right'))
@@ -256,8 +257,8 @@
             // bind the time zone used to build the calendar to either the timeZone passed in through the options or the zone of the startDate (which will be the local time zone by default)
             if (typeof options.timeZone === 'string') {
                 this.timeZone = options.timeZone;
-                this.startDate = this.startDate.tz(this.timeZone);
-                this.endDate = this.endDate.tz(this.timeZone);
+                this.startDate = !options.startDate ? moment.tz(this.timeZone).startOf('day') : this.startDate.tz(this.timeZone);
+                this.endDate = !options.endDate ? moment.tz(this.timeZone).endOf('day') : this.endDate.tz(this.timeZone);
                 if(this.minDate)
                     this.minDate = this.minDate.tz(this.timeZone);
                 if(this.maxDate)
@@ -277,6 +278,7 @@
                 this.container.find('.calendar.left').hide();
                 if (!this.container.find('.calendar.right').hasClass('single'))
                     this.container.find('.calendar.right').addClass('single');
+                this.endDate = this.startDate.clone();
             } else {
                 this.container.removeClass('single');
                 this.container.find('.calendar.right').removeClass('single');
@@ -492,7 +494,7 @@
             this.element.removeClass('active');
             this.container.hide();
 
-            if (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
+            if (!this.hasStartInit || !this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
                 this.notify();
 
             this.oldStartDate = this.startDate.clone();
