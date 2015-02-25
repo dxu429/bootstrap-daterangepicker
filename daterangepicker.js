@@ -55,7 +55,7 @@
             options = {};
 
         this.parentEl = (typeof options === 'object' && options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
-        this.container = $(DRPTemplate).appendTo(this.parentEl);
+        this.container = $(DRPTemplate).prependTo(this.parentEl);
 
         this.setOptions(options, cb);
 
@@ -93,6 +93,7 @@
             this.timePicker12Hour = true;
             this.singleDatePicker = false;
             this.hasStartInit = options.startDate;
+            this.scope = options.scope;
 
             this.opens = 'right';
             if (this.element.hasClass('pull-right'))
@@ -480,7 +481,8 @@
                 target.closest(this.element).length ||
                 target.closest(this.container).length ||
                 target.closest('.calendar-date').length ||
-                target.closest('input.select2-input').length
+                target.closest('input.select2-input').length ||
+                target.closest(this.scope).length
                 ) return;
             this.hide();
         },
