@@ -671,10 +671,10 @@
             if (dayOfWeek == this.locale.firstDay)
                 startDay = daysInLastMonth - 6;
 
-            var curDate = moment.tz([lastYear, lastMonth, startDay, 12, minute, second], this.timeZone);
+            var curDate = moment.tz([lastYear, lastMonth, startDay, 12, 0, 0], this.timeZone);
             
             var col, row;
-            for (i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = moment.tz(curDate, this.timeZone).add(24, 'hour')) {
+            for (i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = curDate.add(1, 'day')) {
                 if (i > 0 && col % 7 === 0) {
                     col = 0;
                     row++;
