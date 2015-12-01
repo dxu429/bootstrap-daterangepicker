@@ -67,7 +67,7 @@
             .on('click.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
             .on('change.daterangepicker', 'select.hourselect,select.minuteselect,select.secondselect,select.ampmselect', $.proxy(this.updateTime, this));
 
-        
+
         this.element.on('click.daterangepicker', $.proxy(this.toggle, this));
 
     };
@@ -236,11 +236,11 @@
             //if no start/end dates set, check if an input element contains initial values
             if (typeof options.startDate === 'undefined' && typeof options.endDate === 'undefined') {
                 if ($(this.element).is('input[type=text]')) {
-                    var val = $(this.element).val(), 
+                    var val = $(this.element).val(),
                         split = val.split(this.separator);
-                    
+
                     start = end = null;
-                    
+
                     if (split.length == 2) {
                         start = moment(split[0], this.format);
                         end = moment(split[1], this.format);
@@ -672,7 +672,7 @@
                 startDay = daysInLastMonth - 6;
 
             var curDate = moment.tz([lastYear, lastMonth, startDay, 12, 0, 0], this.timeZone);
-            
+
             var col, row;
             for (i = 0, col = 0, row = 0; i < 42; i++, col++, curDate = curDate.add(1, 'day')) {
                 if (i > 0 && col % 7 === 0) {
@@ -682,7 +682,7 @@
 
                 calendar[row][col] = curDate.clone().hour(hour);
                 curDate.hour(12);
-                
+
                 if (this.startDate && calendar[row][col].format('YYYY-MM-DD') != this.startDate.format('YYYY-MM-DD') && (side == 'left' || this.singleDatePicker)) {
                     calendar[row][col] = calendar[row][col].startOf('day');
                 }
@@ -745,7 +745,7 @@
 
                     if ((minDate && calendar[row][col].isBefore(minDate, 'day')) || (maxDate && calendar[row][col].isAfter(maxDate, 'day'))) {
                         cname = ' off disabled ';
-                    } 
+                    }
                     if (calendar[row][col].format('YYYY-MM-DD') == selected.format('YYYY-MM-DD')) {
                         cname += ' active ';
                         if (calendar[row][col].format('YYYY-MM-DD') == this.startDate.format('YYYY-MM-DD')) {
@@ -782,8 +782,6 @@
 
                 if (minDate && (side == 'left' || this.singleDatePicker) && selected.format('YYYY-MM-DD') == minDate.format('YYYY-MM-DD')) {
                     min_hour = minDate.hour();
-                    if (selected.hour() < min_hour)
-                        selected.hour(min_hour);
                     if (this.timePicker12Hour && min_hour >= 12 && selected.hour() >= 12)
                         min_hour -= 12;
                     if (this.timePicker12Hour && min_hour == 12)
@@ -792,8 +790,6 @@
 
                 if (maxDate && (side == 'right' || this.singleDatePicker) && selected.format('YYYY-MM-DD') == maxDate.format('YYYY-MM-DD')) {
                     max_hour = maxDate.hour();
-                    if (selected.hour() > max_hour)
-                        selected.hour(max_hour);
                     if (this.timePicker12Hour && max_hour >= 12 && selected.hour() >= 12)
                         max_hour -= 12;
                 }
@@ -811,8 +807,9 @@
                 }
 
                 for (i = start; i <= end; i++) {
-
-                    if (i == selected_hour) {
+                    if ((i < min_hour || i > max_hour) && i == selected_hour) {
+                        html += '<option value="' + i + '" selected="selected" disabled="disabled" class="disabled">' + i + '</option>';
+                    }else if (i == selected_hour) {
                         html += '<option value="' + i + '" selected="selected">' + i + '</option>';
                     } else if (i < min_hour || i > max_hour) {
                         html += '<option value="' + i + '" disabled="disabled" class="disabled">' + i + '</option>';
@@ -831,21 +828,19 @@
 
                 if (minDate && (side == 'left' || this.singleDatePicker) && selected.format('YYYY-MM-DD h A') == minDate.format('YYYY-MM-DD h A')) {
                     min_minute = minDate.minute();
-                    if (selected.minute() < min_minute)
-                        selected.minute(min_minute);
                 }
 
                 if (maxDate && (side == 'right' || this.singleDatePicker) && selected.format('YYYY-MM-DD h A') == maxDate.format('YYYY-MM-DD h A')) {
                     max_minute = maxDate.minute();
-                    if (selected.minute() > max_minute)
-                        selected.minute(max_minute);
                 }
 
                 for (i = 0; i < 60; i += this.timePickerIncrement) {
                     var num = i;
                     if (num < 10)
                         num = '0' + num;
-                    if (i == selected.minute()) {
+                    if ((i < min_minute || i > max_minute) && i == selected.minute()){
+                        html += '<option value="' + i + '" selected="selected" disabled="disabled" class="disabled">' + num + '</option>';
+                    } else if (i == selected.minute()) {
                         html += '<option value="' + i + '" selected="selected">' + num + '</option>';
                     } else if (i < min_minute || i > max_minute) {
                         html += '<option value="' + i + '" disabled="disabled" class="disabled">' + num + '</option>';
