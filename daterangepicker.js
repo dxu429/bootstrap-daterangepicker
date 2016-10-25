@@ -109,7 +109,8 @@
                 customRangeLabel: 'Custom Range',
                 daysOfWeek: moment.weekdaysMin(),
                 monthNames: moment.monthsShort(),
-                firstDay: moment.localeData()._week.dow
+                firstDay: moment.localeData()._week.dow,
+                localeString: 'en'
             };
 
             this.cb = function () { };
@@ -185,6 +186,10 @@
 
                 if (typeof options.locale.customRangeLabel === 'string') {
                   this.locale.customRangeLabel = options.locale.customRangeLabel;
+                }
+
+                if (typeof options.locale.localeString === 'string') {
+                  this.locale.localeString = options.locale.localeString;
                 }
             }
 
@@ -385,8 +390,8 @@
 
         notify: function () {
             this.updateView();
-            this.startDate = this.startDate.clone().utc();
-            this.endDate = this.endDate.clone().utc();
+            this.startDate = this.startDate.clone().utc().locale(this.locale.localeString);
+            this.endDate = this.endDate.clone().utc().locale(this.locale.localeString);
             this.cb(this.startDate.clone(), this.endDate.clone(), this.chosenLabel);
         },
 
